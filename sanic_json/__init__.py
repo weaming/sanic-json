@@ -16,6 +16,9 @@ def check_return(rv):
     else:
         rv_kw = {}
 
+    headers = rv_kw.setdefault("headers", {})
+    headers.update({"X-Served-By": "sanic", "Access-Control-Allow-Origin": "*"})
+
     if isinstance(rv, dict):
         if "success" not in rv:
             rv["success"] = True if rv_kw.get("status", 200) == 200 else False
