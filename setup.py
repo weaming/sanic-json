@@ -14,7 +14,7 @@ gh_repo = 'https://github.com/weaming/sanic-json'
 setup(
     name='sanic-json',  # Required
 
-    version='0.1.1',  # Required
+    version='0.1.2',  # Required
 
     # This is a one-line description or tagline of what your project does.
     description='Sanic framework thin wapper to write JSON API',  # Required

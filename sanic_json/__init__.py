@@ -1,5 +1,7 @@
 from functools import partial
 from sanic.response import json
+from .validate import valida_request_query, MissingQueryException
+from .sig import get_signature
 
 
 def check_result(rv):
@@ -16,8 +18,8 @@ def check_result(rv):
         rv_kw = {}
 
     if isinstance(rv, dict):
-        if 'success' not in rv:
-            rv['success'] = True if rv_kw.get('status', 200) == 200 else False
+        if "success" not in rv:
+            rv["success"] = True if rv_kw.get("status", 200) == 200 else False
 
         return json(rv, **rv_kw)
     else:
@@ -25,11 +27,33 @@ def check_result(rv):
 
 
 def check_response(fn):
-    async def new_fn(*args, **kwargs):
+    async def new_fn(req):
+        args, kwargs = get_signature(fn)
+        # shift the request instance
+        args = args[1:]
+        # print(args, kwargs)
         try:
-            rv = await fn(*args, **kwargs)
+            q_args, q_kwargs = valida_request_query(req, *args, **kwargs)
+        except MissingQueryException as e:
+            rv = (
+                {
+                    "success": False,
+                    "reason": str(e),
+                    "type": str(type(e))
+                }, 400
+            )
+            return check_result(rv)
+
+        try:
+            rv = await fn(req, *q_args, **q_kwargs)
         except Exception as e:
-            rv = ({"success": False, "reason": str(e), "type": str(type(e))}, 500)
+            rv = (
+                {
+                    "success": False,
+                    "reason": str(e),
+                    "type": str(type(e))
+                }, 500
+            )
 
         return check_result(rv)
 
