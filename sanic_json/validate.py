@@ -14,6 +14,6 @@ def valida_request_query(req, *args, **kwargs):
 
     for k, default in kwargs.items():
         # only need the first
-        req.args.get(k, [default])[0]
+        q_kwargs[k] = req.args.get(k, default)
 
     return q_args, q_kwargs
