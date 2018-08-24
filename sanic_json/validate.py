@@ -14,6 +14,12 @@ def valida_request_query(req, *args, **kwargs):
 
     for k, default in kwargs.items():
         # only need the first
-        q_kwargs[k] = req.args.get(k, default)
+        value = req.args.get(k, default)
+        if isinstance(default, int):
+            value = int(value)
+        elif isinstance(default, float):
+            value = float(value)
+
+        q_kwargs[k] = value
 
     return q_args, q_kwargs
