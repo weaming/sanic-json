@@ -9,7 +9,7 @@ clean:
 	rm -fr build dist *.egg-info
 
 build: clean
-	python setup.py bdist_wheel --universal
+	python setup.py bdist_wheel --python-tag py3
 
 install: build
 	$(pip) install --force-reinstall ./dist/*.whl
