@@ -21,7 +21,8 @@ def obj_to_dict(obj):
     else:
         return {k: obj_to_dict(v) for k, v in obj.__dict__.items()}
 
-async def random_pohoto(req, count=10):
+async def random_pohoto(req):
+    count = req.args.get('count', [10])[0]
     res = api.photo.random(count=count)
     return {"data": obj_to_dict(res)}
 ```
