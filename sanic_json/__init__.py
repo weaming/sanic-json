@@ -4,10 +4,9 @@ from .validate import valida_request_query, MissingQueryException
 from .sig import get_signature
 
 
-def check_result(rv):
+def check_return(rv):
     if isinstance(rv, tuple):
-        rv = rv[0]
-        other = rv[1]
+        rv, other = rv[0], rv[1]
         if isinstance(other, dict):
             rv_kw = other
         elif isinstance(other, int):
@@ -42,7 +41,7 @@ def check_response(fn):
                     "type": str(type(e))
                 }, 400
             )
-            return check_result(rv)
+            return check_return(rv)
 
         try:
             rv = await fn(req, *q_args, **q_kwargs)
@@ -55,7 +54,7 @@ def check_response(fn):
                 }, 500
             )
 
-        return check_result(rv)
+        return check_return(rv)
 
     return new_fn
 
