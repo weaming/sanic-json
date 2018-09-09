@@ -38,7 +38,7 @@ def parse_boolean_value(v):
         except Exception:
             pass
 
-    if v.lower() in ["false", "null", "nil"]:
+    if v.lower() in ["false", "null", "nil", "none"]:
         return False
     elif v.lower() == "true":
         return True
