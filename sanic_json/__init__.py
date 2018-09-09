@@ -21,7 +21,7 @@ def check_return(rv):
 
     if isinstance(rv, dict):
         if "success" not in rv:
-            rv["success"] = True if rv_kw.get("status", 200) == 200 else False
+            rv["success"] = True if rv_kw.get("status", 200) < 400 else False
 
         return json(rv, **rv_kw)
     else:
