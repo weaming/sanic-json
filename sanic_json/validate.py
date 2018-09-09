@@ -16,7 +16,7 @@ def valida_request_query(req, *args, **kwargs):
         # only need the first
         value = req.args.get(k, default)
         if isinstance(default, bool):
-            value = bool(value)
+            value = bool(parse_boolean_value(value))
         elif isinstance(default, int):
             value = int(value)
         elif isinstance(default, float):
@@ -25,3 +25,21 @@ def valida_request_query(req, *args, **kwargs):
         q_kwargs[k] = value
 
     return q_args, q_kwargs
+
+
+def parse_boolean_value(v):
+    if not v:
+        return None
+
+    types = [float, int]
+    for t in types:
+        try:
+            return t(v)
+        except Exception:
+            pass
+
+    if v.lower() in ["false", "null", "nil"]:
+        return False
+    elif v.lower() == "true":
+        return True
+    return v
