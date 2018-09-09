@@ -62,12 +62,12 @@ def check_response(fn):
     return new_fn
 
 
-def add_route(app, url, fn):
-    app.route(url)(fn)
+def add_route(app, url, fn, **kwargs):
+    app.route(url, **kwargs)(fn)
 
 
-def json_route(app, url, fn):
-    add_route(app, url, check_response(fn))
+def json_route(app, url, fn, **kwargs):
+    add_route(app, url, check_response(fn), **kwargs)
 
 
 def get_json_route(app):
