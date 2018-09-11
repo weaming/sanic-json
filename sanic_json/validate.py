@@ -21,6 +21,12 @@ def valida_request_query(req, *args, **kwargs):
             value = int(value)
         elif isinstance(default, float):
             value = float(value)
+        elif isinstance(default, bool):
+            if not isinstance(value, bool):
+                if value.lower() in ["nil", "null", "none", "0"]:
+                    value = False
+                else:
+                    value = True
 
         q_kwargs[k] = value
 
