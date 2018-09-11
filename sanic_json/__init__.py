@@ -2,6 +2,7 @@ from functools import partial
 from sanic.response import json
 from .validate import valida_request_query, MissingQueryException
 from .sig import get_signature
+from .middleware import check_middlewares
 
 
 def check_return(rv):
@@ -28,7 +29,7 @@ def check_return(rv):
         return rv
 
 
-def check_response(fn):
+def check_response(fn, middlewares):
     async def new_fn(req):
         args, kwargs = get_signature(fn)
         # shift the request instance
@@ -37,6 +38,18 @@ def check_response(fn):
         try:
             q_args, q_kwargs = valida_request_query(req, *args, **kwargs)
         except MissingQueryException as e:
+            rv = (
+                {
+                    "success": False,
+                    "reason": str(e),
+                    "type": str(type(e))
+                }, 400
+            )
+            return check_return(rv)
+
+        try:
+            check_middlewares(middlewares or [], req)
+        except Exception as e:
             rv = (
                 {
                     "success": False,
@@ -62,12 +75,12 @@ def check_response(fn):
     return new_fn
 
 
-def add_route(app, url, fn, **kwargs):
+def add_route(app, url, fn, middlewares=None, **kwargs):
     app.route(url, **kwargs)(fn)
 
 
-def json_route(app, url, fn, **kwargs):
-    add_route(app, url, check_response(fn), **kwargs)
+def json_route(app, url, fn, middlewares=None, **kwargs):
+    add_route(app, url, check_response(fn, middlewares=middlewares), **kwargs)
 
 
 def get_json_route(app):
