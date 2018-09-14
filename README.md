@@ -1,6 +1,8 @@
 # sanic json
 
-A thin wrapper on sanic web framework to help writting JSON API
+A thin wrapper on sanic web framework to help writting JSON API.
+
+Recommond use [json-api](https://github.com/weaming/json-api) instead. It's a abstraction library of this library.
 
 ```
 pip3 install sanic-json
