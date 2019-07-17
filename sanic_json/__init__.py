@@ -1,4 +1,4 @@
-from functools import partial
+from functools import partial, wraps
 from sanic.response import json
 from .validate import valida_request_query, MissingQueryException
 from .sig import get_signature
@@ -22,7 +22,7 @@ def check_return(rv):
 
     if isinstance(rv, dict):
         if "success" not in rv:
-            rv["success"] = True if rv_kw.get("status", 200) < 400 else False
+            rv["success"] = rv_kw.get("status", 200) < 400
 
         return json(rv, **rv_kw)
     else:
@@ -30,6 +30,7 @@ def check_return(rv):
 
 
 def check_response(fn, middlewares):
+    @wraps(fn)
     async def new_fn(req):
         args, kwargs = get_signature(fn)
         # shift the request instance

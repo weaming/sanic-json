@@ -46,7 +46,7 @@ json_route("/api/random", random_pohoto)
 if __name__ == "__main__":
     import os
 
-    debug = True if os.getenv("DEBUG") else False
+    debug = bool(os.getenv("DEBUG"))
     # hot reload in next release: https://github.com/channelcat/sanic/issues/168
     app.run(host="0.0.0.0", port=8000, debug=debug)
 ```
